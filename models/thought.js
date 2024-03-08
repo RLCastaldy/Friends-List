@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const reactionSchema = require('./reaction');
 const Schema = mongoose.Schema;
 
 const thoughtSchema = new Schema({
@@ -11,27 +12,19 @@ const thoughtSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        timestamp: {
-            type: Date,
-            default: Date.now
-        }
+        timestamp: Date
     },
     username: {
         type: String,
         required: true
     },
-    reactions: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Reaction'
-        }
-    ]
+    reactions: reactionSchema
 });
 
 // Define a getter method for formatting the timestamp
-thoughtSchema.path('timestamp').get(function(timestamp) {
+thoughtSchema.path('createdAt').get(function(timestamp) {
     // Customize the timestamp formatting here
-    return timestamp.toISOString(); // Example: Format timestamp as ISO string
+    return new Date (timestamp).toLocaleString();
 });
 
 // Create a virtual property called reactionCount

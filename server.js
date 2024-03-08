@@ -8,7 +8,6 @@ const port = 3001;
 
 app.use(express.json());
 app.use(routes);
-app.use(models);
 
 db.once('open', () => {
   app.listen(port, () => {
