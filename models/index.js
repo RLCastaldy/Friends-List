@@ -1,3 +1,3 @@
-const Friends = require('./friends');
+const User = require('./user');
 
-module.exports = Friends
+module.exports = User
