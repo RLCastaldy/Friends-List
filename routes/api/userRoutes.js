@@ -43,22 +43,17 @@ router.post('/', async (req, res) => {
   }
 });
 
-// update user
+// update user by Id
 router.put('/:id', async (req, res) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: 'Invalid Object ID!' });
+    const user = await User.update(req.body, {where: {id:req.params.id}});
+    if (!user) {
+      return res.status(404).json({ message: 'No category found with this id!' });
     }
-
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'No user found with this id!' });
-    }
-
-    res.status(200).json(updatedUser);
+    // await Category.update(req.body);
+    res.status(200).json(user);
   } catch (err) {
-    res.status(500).json({ message: 'Internal Server Error', error: err });
+    res.status(500).json(err);
   }
 });
 

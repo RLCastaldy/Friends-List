@@ -14,11 +14,15 @@ const thoughtSchema = new Schema({
         default: Date.now,
         timestamp: Date
     },
-    username: {
+    userName: {
         type: String,
         required: true
     },
-    reactions: reactionSchema
+    thoughts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Thought' // Reference the Thought model for self-reference
+      }],
+    reactions: [reactionSchema]
 });
 
 // Define a getter method for formatting the timestamp
