@@ -32,14 +32,27 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST a new user
+// create a new tought and post to
 router.post('/', async (req, res) => {
   console.log(req.body);
   try {
-      const newThought = await Thought.create(req.body);
-      res.status(201).json(newThought);
+    const newThought = await Thought.create(req.body);
+
+    // Get the user ID from the request body
+    const userId = req.body.id;
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // Push the ID of the new thought to the user's thoughts array
+    user.thoughts.push(newThought._id);
+
+    // Save the user to update the thoughts array
+    await user.save();
+
+    res.status(201).json(newThought);
   } catch (err) {
-      res.status(400).json({ message: err.message });
+    res.status(400).json({ message: err.message });
   }
 });
 
