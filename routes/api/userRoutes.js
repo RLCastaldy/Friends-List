@@ -6,7 +6,7 @@ const {User, Thought} = require('../../models');
  // GET all users
 router.get('/', async (req, res) => {
   try {
-      const user = await User.find();
+      const user = await User.find().populate("thoughts").populate("friends");
       res.json(user);
   } catch (err) {
       res.status(500).json({ message: err.message });
@@ -78,7 +78,7 @@ router.delete('/:id', async (req, res) => {
 // Add a friend to a user's friend list
 router.post('/:userId/friends/:friendId', async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params.userId;
     const friendId = req.params.friendId;
 
     if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(friendId)) {
@@ -110,7 +110,7 @@ router.post('/:userId/friends/:friendId', async (req, res) => {
 // Remove a friend from a user's friend list
 router.delete('/:userId/friends/:friendId', async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params.userId;
     const friendId = req.params.friendId;
 
     if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(friendId)) {

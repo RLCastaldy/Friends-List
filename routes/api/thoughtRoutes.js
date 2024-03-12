@@ -43,6 +43,7 @@ router.post('/', async (req, res) => {
 
     // Find the user by ID
     const user = await User.findById(userId);
+    console.log(user);
 
     // Push the ID of the new thought to the user's thoughts array
     user.thoughts.push(newThought._id);
@@ -110,7 +111,7 @@ router.post('/:thoughtId/reactions', async (req, res) => {
 
     const newReaction = {
       reactionBody: req.body.reactionBody,
-      username: req.body.username,
+      userName: req.body.userName,
     };
 
     thought.reactions.push(newReaction);
