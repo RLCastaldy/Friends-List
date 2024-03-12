@@ -80,5 +80,67 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Add a reaction to a thought
+router.post('/:thoughtId/reactions', async (req, res) => {
+  try {
+    const thoughtId = req.params.thoughtId;
+
+    if (!mongoose.Types.ObjectId.isValid(thoughtId)) {
+      return res.status(400).json({ message: 'Invalid Thought ID' });
+    }
+
+    const thought = await Thought.findById(thoughtId);
+
+    if (!thought) {
+      return res.status(404).json({ message: 'Thought not found' });
+    }
+
+    const newReaction = {
+      reactionBody: req.body.reactionBody,
+      username: req.body.username,
+    };
+
+    thought.reactions.push(newReaction);
+    await thought.save();
+
+    res.status(201).json(thought);
+  } catch (err) {
+    res.status(500).json({ message: 'Internal Server Error', error: err });
+  }
+});
+
+// Delete a reaction from a thought
+router.delete('/:thoughtId/reactions/:reactionId', async (req, res) => {
+  try {
+    const thoughtId = req.params.thoughtId;
+    const reactionId = req.params.reactionId;
+
+    if (!mongoose.Types.ObjectId.isValid(thoughtId) || !mongoose.Types.ObjectId.isValid(reactionId)) {
+      return res.status(400).json({ message: 'Invalid Thought ID or Reaction ID' });
+    }
+
+    const thought = await Thought.findById(thoughtId);
+
+    if (!thought) {
+      return res.status(404).json({ message: 'Thought not found' });
+    }
+
+    // Find the index of the reaction to remove
+    const index = thought.reactions.findIndex(reaction => reaction._id.toString() === reactionId);
+
+    if (index === -1) {
+      return res.status(404).json({ message: 'Reaction not found' });
+    }
+
+    // Remove the reaction from the array
+    thought.reactions.splice(index, 1);
+    await thought.save();
+
+    res.status(200).json(thought);
+  } catch (err) {
+    res.status(500).json({ message: 'Internal Server Error', error: err });
+  }
+});
+
 
 module.exports = router;

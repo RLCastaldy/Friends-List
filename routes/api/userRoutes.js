@@ -75,5 +75,69 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Add a friend to a user's friend list
+router.post('/:userId/friends/:friendId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const friendId = req.params.friendId;
+
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(friendId)) {
+      return res.status(400).json({ message: 'Invalid user or friend ID' });
+    }
+
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    if (!user || !friend) {
+      return res.status(404).json({ message: 'User or friend not found' });
+    }
+
+    // Check if the friend is already in the user's friend list
+    if (user.friends.includes(friend._id)) {
+      return res.status(400).json({ message: 'Friend already in the list' });
+    }
+
+    // Add the friend to the user's friend list
+    user.friends.push(friend._id);
+    await user.save();
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Internal Server Error', error: err });
+  }
+});
+
+// Remove a friend from a user's friend list
+router.delete('/:userId/friends/:friendId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const friendId = req.params.friendId;
+
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(friendId)) {
+      return res.status(400).json({ message: 'Invalid user or friend ID' });
+    }
+
+    const user = await User.findById(userId);
+    const friend = await User.findById(friendId);
+
+    if (!user || !friend) {
+      return res.status(404).json({ message: 'User or friend not found' });
+    }
+
+    // Check if the friend is in the user's friend list
+    if (!user.friends.includes(friend._id)) {
+      return res.status(400).json({ message: 'Friend not in the list' });
+    }
+
+    // Remove the friend from the user's friend list
+    user.friends = user.friends.filter(f => f.toString() !== friend._id.toString());
+    await user.save();
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Internal Server Error', error: err });
+  }
+});
+
 
 module.exports = router;
