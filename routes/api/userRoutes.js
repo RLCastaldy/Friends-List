@@ -46,14 +46,17 @@ router.post('/', async (req, res) => {
 // update user by Id
 router.put('/:id', async (req, res) => {
   try {
-    const user = await User.update(req.body, {where: {id:req.params.id}});
-    if (!user) {
-      return res.status(404).json({ message: 'No category found with this id!' });
+    const { userName, emailAddress } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, { userName, emailAddress }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'No user found with this id!' });
     }
-    // await Category.update(req.body);
-    res.status(200).json(user);
+
+    res.status(200).json(updatedUser);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ error: err.message });
   }
 });
 
