@@ -5,7 +5,10 @@
 
 ## Description
 
-A simple place to communicate and share thoughts with friends.
+A simple place to communicate and share thoughts with friends.<br>
+<br>
+[Untitled_ Mar 12 2024 6_56 PM.webm](https://github.com/RLCastaldy/Friends-List/assets/140565239/129675a7-6c72-4a57-8885-a5625156259d)<br>
+<br>
 
 ## Table of Contents
 
